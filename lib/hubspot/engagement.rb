@@ -176,4 +176,38 @@ module Hubspot
       end
     end
   end
+  
+  class EngagementMeeting < Engagement
+    def body
+      metadata['body']
+    end
+
+    def contact_ids
+      associations['contactIds']
+    end
+
+    class << self
+      def create!(contact_id, note_body, start_time, end_time, owner_id = nil)
+        data = {
+          engagement: {
+            type: 'MEETING'
+          },
+          associations: {
+            contactIds: [contact_id]
+          },
+          metadata: {
+            body: note_body,
+            startTime: start_time,
+            endTime: end_time,
+            title: 'NEW APPOINTMENT'
+          }
+        }
+
+        # if the owner id has been provided, append it to the engagement
+        data[:engagement][:owner_id] = owner_id if owner_id
+
+        super(data)
+      end
+    end
+  end
 end
