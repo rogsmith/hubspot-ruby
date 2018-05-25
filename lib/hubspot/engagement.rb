@@ -187,7 +187,7 @@ module Hubspot
     end
 
     class << self
-      def create!(contact_id, note_body, start_time, end_time, owner_id = nil)
+      def create!(contact_id, note_body, start_time, end_time, note_title, owner_id = nil)
         data = {
           engagement: {
             type: 'MEETING'
@@ -199,7 +199,7 @@ module Hubspot
             body: note_body,
             startTime: start_time,
             endTime: end_time,
-            title: 'NEW APPOINTMENT'
+            title: note_title
           }
         }
 
