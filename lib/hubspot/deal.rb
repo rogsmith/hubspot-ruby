@@ -67,9 +67,9 @@ module Hubspot
       # {http://developers.hubspot.com/docs/methods/deals/get-associated-deals}
       # @param company [Hubspot::Company] the company
       # @return [Array] Array of Hubspot::Deal records
-      def find_by_company(company)
+      def find_by_company(company_ids)
         path = ASSOCIATED_DEAL_PATH
-        params = { objectType: :company, objectId: company.vid }
+        params = { objectType: :company, objectId: company_ids }
         response = Hubspot::Connection.get_json(path, params)
         response["results"].map { |deal_id| find(deal_id) }
       end
@@ -78,9 +78,9 @@ module Hubspot
       # {http://developers.hubspot.com/docs/methods/deals/get-associated-deals}
       # @param contact [Hubspot::Contact] the contact
       # @return [Array] Array of Hubspot::Deal records
-      def find_by_contact(vid)
+      def find_by_contact(vids)
         path = ASSOCIATED_DEAL_PATH
-        params = { objectType: :contact, objectId: vid }
+        params = { objectType: :contact, objectId: vids }
         response = Hubspot::Connection.get_json(path, params)
         response["results"].map { |deal_id| find(deal_id) }
       end
