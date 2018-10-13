@@ -63,9 +63,9 @@ module Hubspot
         # skip = opts.delete(:skip) { 0 }
         
         response = Hubspot::Connection.get_json(DEALS_PATH, opts)
-        puts response
-        response['results'].map! { |d| new(d) }
-        paged ? response : response['results']
+        
+        response['deals'].map! { |d| new(d) }
+        paged ? response : response['deals']
       end
  
 
