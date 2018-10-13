@@ -61,11 +61,10 @@ module Hubspot
         paged = opts.delete(:paged) { false }
         # limit = opts.delete(:limit) { 20 }
         # skip = opts.delete(:skip) { 0 }
-        path, opts = [DEALS_PATH, opts]
-
-        response = Hubspot::Connection.get_json(path, opts)
-        response['deals'].map! { |c| new(c) }
-        paged ? response : response['deals']
+        
+        response = Hubspot::Connection.get_json(DEALS_PATH, opts)
+        response['results'].map! { |d| new(d) }
+        paged ? response : response['results']
       end
  
 
