@@ -22,10 +22,10 @@ module Hubspot
     attr_reader :vids
 
     def initialize(response_hash)
-      @portal_id = response_hash["portalId"]
-      @deal_id = response_hash["dealId"]
-      @company_ids = response_hash["associations"]["associatedCompanyIds"]
-      @vids = response_hash["associations"]["associatedVids"]
+      @portal_id = response_hash.try(:[], "portalId")
+      @deal_id = response_hash.try(:[], "dealId")
+      @company_ids = response_hash.try(:[], "associations").try(:[], "associatedCompanyIds")
+      @vids = response_hash.try(:[], "associations").try(:[], "associatedVids")
       @properties = Hubspot::Utils.properties_to_hash(response_hash["properties"])
     end
 
