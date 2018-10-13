@@ -14,6 +14,7 @@ module Hubspot
     ADD_CONTACT_TO_COMPANY_PATH       = "/companies/v2/companies/:company_id/contacts/:vid"
     DESTROY_COMPANY_PATH              = "/companies/v2/companies/:company_id"
     GET_COMPANY_CONTACTS_PATH         = "/companies/v2/companies/:company_id/contacts"
+    COMPANIES_PATH                    = '/companies/v2/companies/paged'
 
     class << self
       # Find all companies by created date (descending)
@@ -26,16 +27,14 @@ module Hubspot
       # @return [Array] Array of Hubspot::Company records
       def all(opts={})
         recently_updated = opts.delete(:recently_updated) { false }
+        paged = opts.delete(:paged) { false }
         # limit = opts.delete(:limit) { 20 }
         # skip = opts.delete(:skip) { 0 }
-        path = if recently_updated
-          RECENTLY_MODIFIED_COMPANIES_PATH
-        else
-          RECENTLY_CREATED_COMPANIES_PATH
-        end
+        path, opts = [COMPANIES_PATH, opts]
 
         response = Hubspot::Connection.get_json(path, opts)
-        response['results'].map { |c| new(c) }
+        response['companies'].map! { |c| new(c) }
+        paged ? response : response['companies']
       end
 
       # Finds a list of companies by domain
