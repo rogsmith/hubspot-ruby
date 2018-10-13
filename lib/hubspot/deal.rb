@@ -58,7 +58,6 @@ module Hubspot
       # {http://developers.hubspot.com/docs/methods/companies/get_companies_modified}
       # @return [Array] Array of Hubspot::Company records
       def all(opts={})
-        recently_updated = opts.delete(:recently_updated) { false }
         paged = opts.delete(:paged) { false }
         # limit = opts.delete(:limit) { 20 }
         # skip = opts.delete(:skip) { 0 }
