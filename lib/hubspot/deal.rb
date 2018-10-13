@@ -13,6 +13,7 @@ module Hubspot
     UPDATE_DEAL_PATH = '/deals/v1/deal/:deal_id'
     ASSOCIATE_DEAL_PATH = '/deals/v1/deal/:deal_id/associations/:OBJECTTYPE?id=:objectId'
     ASSOCIATED_DEAL_PATH = "/deals/v1/deal/associated/:objectType/:objectId"
+    DEALS_PATH = "/deals/v1/deal/paged"
 
     attr_reader :properties
     attr_reader :portal_id
@@ -47,6 +48,26 @@ module Hubspot
          object_ids = (company_ids.any? ? company_ids : vids).join('&id=')
          Hubspot::Connection.put_json(ASSOCIATE_DEAL_PATH, params: { deal_id: deal_id, OBJECTTYPE: objecttype, objectId: object_ids}, body: {})
        end
+      
+      # Find all companies by created date (descending)
+      # @param opts [Hash] Possible options are:
+      #    recently_updated [boolean] (for querying all accounts by modified time)
+      #    count [Integer] for pagination
+      #    offset [Integer] for pagination
+      # {http://developers.hubspot.com/docs/methods/companies/get_companies_created}
+      # {http://developers.hubspot.com/docs/methods/companies/get_companies_modified}
+      # @return [Array] Array of Hubspot::Company records
+      def all(opts={})
+        recently_updated = opts.delete(:recently_updated) { false }
+        paged = opts.delete(:paged) { false }
+        # limit = opts.delete(:limit) { 20 }
+        # skip = opts.delete(:skip) { 0 }
+        path, opts = [DEALS_PATH, opts]
+
+        response = Hubspot::Connection.get_json(path, opts)
+        response['deals'].map! { |c| new(c) }
+        paged ? response : response['deals']
+      end
  
 
       def find(deal_id)
